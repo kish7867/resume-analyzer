@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 
 # Defines the base URL for our Django API.
-BACKEND_URL = "https://resume-analyzer-backend.onrender.com/api/register/"
+BACKEND_URL = "https://resume-analyzer-backend-wjd5.onrender.com"
 
 # --- Page Configuration (Do this first!) ---
 st.set_page_config(
