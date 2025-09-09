@@ -147,4 +147,14 @@ REST_FRAMEWORK = {
 
 # Add this at the end of the file
 # This tells our backend to allow requests from our Streamlit frontend
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:8501').split(',')
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:8501"  # fallback for local Streamlit dev
+    ).split(",")
+    if origin.strip()
+]
+
+# Optional: print for debugging (remove in production)
+print("CORS_ALLOWED_ORIGINS:", CORS_ALLOWED_ORIGINS)
