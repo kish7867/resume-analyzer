@@ -65,5 +65,5 @@ tzdata==2025.2
 uritemplate==4.2.0
 urllib3==2.5.0
 gunicorn
-psycopg2-binarypip 
+psycopg2-binary
 dj-database-url
