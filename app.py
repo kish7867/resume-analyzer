@@ -193,7 +193,9 @@ import pandas as pd
 from datetime import datetime
 
 # Defines the base URL for our Django API.
-BACKEND_URL = "http://127.0.0.1:8000/"
+# BACKEND_URL = "http://127.0.0.1:8000/"
+
+BACKEND_URL = "https://resume-analyzer-backend-kzsm.onrender.com"
 
 # --- Page Configuration (Do this first!) ---
 st.set_page_config(
