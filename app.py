@@ -186,16 +186,14 @@
 
 
 
-
+import os
 import streamlit as st
 import requests
 import pandas as pd
 from datetime import datetime
 
-# Defines the base URL for our Django API.
-# BACKEND_URL = "http://127.0.0.1:8000/"
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://127.0.0.1:8000")
 
-BACKEND_URL = "https://resume-analyzer-backend-kzsm.onrender.com"
 
 # --- Page Configuration (Do this first!) ---
 st.set_page_config(
@@ -294,21 +292,32 @@ if not st.session_state.get('auth_token'):
                         st.error("Invalid credentials. Please try again.")
 
     with signup_tab:
-        with st.form("signup_form"):
-            username = st.text_input("Choose a Username", key="signup_username")
-            email = st.text_input("Your Email", key="signup_email")
-            password = st.text_input("Choose a Password", type="password", key="signup_password")
-            submitted = st.form_submit_button("Sign Up", type="primary")
+     with st.form("signup_form"):
+        username = st.text_input("Choose a Username", key="signup_username")
+        email = st.text_input("Your Email", key="signup_email")
+        password = st.text_input("Choose a Password", type="password", key="signup_password")
+        submitted = st.form_submit_button("Sign Up", type="primary")
 
-            if submitted:
-                if not username or not email or not password:
-                    st.error("Please fill in all fields.")
+        if submitted:
+            if not username or not email or not password:
+                st.error("Please fill in all fields.")
+            else:
+                response = register_user(username, email, password)
+                if response is None:
+                    st.error("Signup request failed due to network issues.")
                 else:
-                    response = register_user(username, email, password)
-                    if response.status_code == 201:
-                        st.success("Account created! You can now log in.")
+                    # Safely handle JSON decoding
+                    try:
+                        data = response.json()
+                    except requests.exceptions.JSONDecodeError:
+                        st.error(f"Failed to create account. Server returned non-JSON response:\n{response.text}")
                     else:
-                        st.error(f"Failed to create account: {response.json().get('detail', 'Unknown error')}")
+                        if response.status_code == 201:
+                            st.success("Account created! You can now log in.")
+                        else:
+                            # Backend may provide 'detail' key or something else
+                            error_message = data.get("detail") or data.get("message") or "Unknown error"
+                            st.error(f"Failed to create account: {error_message}")
 
 # --- Main App & History Pages ---
 else:
