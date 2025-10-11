@@ -214,26 +214,72 @@ else:
             st.divider()
             display_results(st.session_state['latest_analysis'])
 
+    # elif "View History" in page:
+    #     st.title("📜 Analysis History")
+    #     headers = {'Authorization': f'Bearer {st.session_state["auth_token"]}'}
+        
+    #     with st.spinner("Fetching your history..."):
+    #         response = requests.get(f"{BACKEND_URL}/api/history/", headers=headers)
+        
+    #     if response.status_code == 200:
+    #         history = response.json()
+    #         if not history:
+    #             st.info("You have no past analyses. Go ahead and analyze a new resume!")
+    #         else:
+    #             history.sort(key=lambda x: x['analyzed_at'], reverse=True)
+    #             for item in history:
+    #                 with st.container(border=True):
+    #                     date = datetime.fromisoformat(item['analyzed_at'].replace('Z', '+00:00'))
+    #                     st.subheader(f"Analysis from {date.strftime('%B %d, %Y at %I:%M %p')}")
+    #                     st.caption(f"Job Description Snippet: *{item['job_description_text'][:150]}...*")
+    #                     with st.expander("View Full Analysis"):
+    #                         display_results(item['result'])
+    #                 st.write("")
+    #     else:
+    #         st.error("Could not fetch your analysis history.")
+
     elif "View History" in page:
         st.title("📜 Analysis History")
         headers = {'Authorization': f'Bearer {st.session_state["auth_token"]}'}
-        
+
         with st.spinner("Fetching your history..."):
             response = requests.get(f"{BACKEND_URL}/api/history/", headers=headers)
-        
+
         if response.status_code == 200:
             history = response.json()
+
             if not history:
                 st.info("You have no past analyses. Go ahead and analyze a new resume!")
             else:
+                # Sort history by analyzed_at descending
                 history.sort(key=lambda x: x['analyzed_at'], reverse=True)
+
+                # Helper function to format UTC timestamp to local timezone
+                def format_local_time(utc_iso, tz_name='Asia/Kolkata'):
+                    from datetime import datetime
+                    import pytz
+                    # Parse UTC datetime from ISO format
+                    utc_date = datetime.fromisoformat(utc_iso.replace('Z', '+00:00'))
+                    # Convert to local timezone
+                    local_tz = pytz.timezone(tz_name)
+                    local_date = utc_date.astimezone(local_tz)
+                    # Return formatted string
+                    return local_date.strftime('%B %d, %Y at %I:%M %p')
+                
+                # Display each analysis
                 for item in history:
-                    with st.container(border=True):
-                        date = datetime.fromisoformat(item['analyzed_at'].replace('Z', '+00:00'))
-                        st.subheader(f"Analysis from {date.strftime('%B %d, %Y at %I:%M %p')}")
+                    with st.container():
+                        # Format analyzed_at to local time
+                        formatted_date = format_local_time(item['analyzed_at'])
+
+                        st.subheader(f"Analysis from {formatted_date}")
                         st.caption(f"Job Description Snippet: *{item['job_description_text'][:150]}...*")
+
                         with st.expander("View Full Analysis"):
                             display_results(item['result'])
-                    st.write("")
+
+                        st.markdown("---")  # separator for readability
+
+    
         else:
-            st.error("Could not fetch your analysis history.")
+            st.error("Could not fetch your analysis history. Please try again later.")
