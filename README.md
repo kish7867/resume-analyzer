@@ -30,7 +30,7 @@ Backend: Django, Django REST Framework
 
 Frontend: Streamlit
 
-Database: SQLite (local), PostgreSQL (production-ready)
+Database: SQLite (local), PostgreSQL (Aiven for production)
 
 AI: Google Gemini API
 
@@ -114,10 +114,9 @@ Open the frontend in your browser and start analyzing resumes! 🚀
 
 🚀 Deployment
 
-This project is deployment-ready using Render:
+This project is fully deployment-ready using Render and Aiven:
 
-PostgreSQL Database – for production data storage.
+- **Aiven PostgreSQL Database** – for secure, managed production data storage.
+- **Django Backend** – hosted on Render as a web service (using Gunicorn).
+- **Streamlit Frontend** – deployed separately on Render for a fast, interactive UI.
 
-Django Backend – deploy as a web service using Gunicorn.
-
-Streamlit Frontend – deploy as a separate web service.
