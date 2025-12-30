@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from .serializers import UserSerializer, ResumeSerializer, AnalysisSerializer
 from .models import User, Resume, JobDescription, Analysis
-from .services import extract_text_from_pdf, analyze_resume_with_gemini
+from .services import extract_text_from_pdf, analyze_resume_with_llama
 
 # An API view for user registration.
 # This provides a public endpoint (no authentication required) for new users to create an account.
@@ -55,7 +55,7 @@ class AnalyzeView(APIView):
 
             # Calls the Gemini analysis service 
             # This is the core step where the actual AI analysis happens.
-            analysis_result = analyze_resume_with_gemini(resume_text, job_description.text)
+            analysis_result = analyze_resume_with_llama(resume_text, job_description.text)
             if not analysis_result:
                 return Response({'error': 'Failed to get analysis from AI service.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
